@@ -1,0 +1,11 @@
+mysql:
+  dns: root:root@tcp(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local
+  userName: root
+  passWord: root
+  ip: 127.0.0.1
+  port: 3306
+  dataBase: test
+  charset: utf8
+  parseTime: True
+  loc: Local
+app:
