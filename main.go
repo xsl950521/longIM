@@ -9,6 +9,7 @@ import (
 func main() {
 	utils.InitConfig()
 	utils.InitMysql()
+	utils.InitRedis()
 	//test.TestGorm()
 	//fmt.Println("")
 	r := router.Router()

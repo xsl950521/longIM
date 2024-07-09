@@ -20,7 +20,9 @@ func GetUserList(c *gin.Context) {
 	data := make([]*models.UserBasic, 10)
 	data = models.GetUserList()
 	c.JSON(http.StatusOK, gin.H{
-		"message": data,
+		"code":    0,
+		"data":    data,
+		"message": "获取成功",
 	})
 }
 
@@ -38,6 +40,7 @@ func FindUserByNameAndPwd(c *gin.Context) {
 	user := models.FindUserByName(name)
 	if user.Name == "" {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": "该用户不存在",
 		})
 		return
@@ -45,6 +48,7 @@ func FindUserByNameAndPwd(c *gin.Context) {
 	fmt.Println("user=", user)
 	if !utils.ValidPassword(pwd, user.Salt, user.PassWord) {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": "密码不正确",
 		})
 		return
@@ -53,7 +57,9 @@ func FindUserByNameAndPwd(c *gin.Context) {
 	fmt.Println("pwd=", pwd)
 	data = models.FindUserByNameAndPwd(name, pwd)
 	c.JSON(http.StatusOK, gin.H{
-		"message": data,
+		"code":    0,
+		"data":    data,
+		"message": "登陆成功",
 	})
 }
 
@@ -75,6 +81,7 @@ func CreateUser(c *gin.Context) {
 	data := models.FindUserByName(user.Name)
 	if data.Name != "" {
 		c.JSON(http.StatusBadGateway, gin.H{
+			"code":    -1,
 			"message": "用户名已注册",
 		})
 		return
@@ -82,6 +89,7 @@ func CreateUser(c *gin.Context) {
 	//TODO 手机号、邮箱的重复验证
 	if password != repassword {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": "两次密码不一致",
 		})
 		return
@@ -92,11 +100,14 @@ func CreateUser(c *gin.Context) {
 	db := models.CreateUser(user)
 	if db.Error != nil {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": db.Error.Error(),
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":    0,
+		"data":    user,
 		"message": "新增用户成功",
 	})
 }
@@ -114,11 +125,13 @@ func DeleteUser(c *gin.Context) {
 	db := models.DeleteUser(user)
 	if db.Error != nil {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": db.Error.Error(),
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":    0,
 		"message": "删除用户成功",
 	})
 }
@@ -144,6 +157,7 @@ func UpdateUser(c *gin.Context) {
 	_, err := govalidator.ValidateStruct(user)
 	if err != nil {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": err.Error(),
 		})
 		return
@@ -151,11 +165,13 @@ func UpdateUser(c *gin.Context) {
 	db := models.UpdateUser(user)
 	if db.Error != nil {
 		c.JSON(-1, gin.H{
+			"code":    -1,
 			"message": db.Error.Error(),
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":    0,
 		"message": "更新成功",
 	})
 }
